@@ -1,0 +1,23 @@
+{
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto",
+        "printWidth": 100
+      }
+    ]
+  },
+  "env": {
+    "node": true,
+    "mocha": true
+  },
+
+  "extends": [
+    "airbnb-base",
+    "prettier",
+    "plugin:chai-friendly/recommended",
+    "plugin:cypress/recommended"
+  ]
+}
