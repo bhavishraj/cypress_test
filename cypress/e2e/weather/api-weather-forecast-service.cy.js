@@ -4,9 +4,15 @@ const apiWeatherUrl = `${Cypress.env('apiUrl')}/data/2.5/weather`;
 const locationParams = require('./apiParams/locQueryParams')();
 const weatherParams = require('./apiParams/weatherQueryParams')();
 
+/**
+ * # api-weather-forecast-service.cy.js
+ * ## regression suite with validations for 3-4 cities
+ * - fetch locations details (longitude and latitude) for 3 locations present in `apiParams/locQueryParams.js` file
+ * - fetch weather details for the fetched locations' lat & lon
+ */
+
 describe('regression suite with validations for 3-4 cities', () => {
-  it('validate locations ', () => {
-    cy.log(locationParams);
+  it('fetch details of 3 locations and then fetch the weather forecast statics for those locations', () => {
     locationParams.forEach((queryParam, index) => {
       cy.request({
         method: 'GET',
@@ -30,6 +36,22 @@ describe('regression suite with validations for 3-4 cities', () => {
         }).then((res) => {
           expect(res.status).to.eq(200);
           cy.log('Weather Response:', JSON.stringify(res.body));
+          expect(
+            res.body,
+            'Weather response should contain properties : coord, weather, main, visibility, name, sys'
+          ).to.include.keys('coord', 'weather', 'main', 'visibility', 'name', 'sys');
+          expect(
+            res.body.coord,
+            'res.body.coord should contain properties : lon, lat'
+          ).to.include.keys('lon', 'lat');
+          expect(
+            res.body.main,
+            'res.body.main should contain properties : temp, temp_min, temp_max, humidity'
+          ).to.include.keys('temp', 'temp_min', 'temp_max', 'humidity');
+          expect(
+            res.body.sys,
+            'res.body.sys should contain properties : country, sunrise, sunset'
+          ).to.include.keys('country', 'sunrise', 'sunset');
         });
       });
     });
