@@ -12,3 +12,4 @@
 1. Open CLI using command `npm run cypress:open` and run tests:
    - API tests are present in api-weather-forecast-service.cy.js
    - UI tests are present in api-weather-forecast-service.cy.js
+1. Command to run UI test headless is `docker-compose --env-file ./cypress/e2e/weather/test.env -f ./cypress/cypress-run-test.yaml up`
