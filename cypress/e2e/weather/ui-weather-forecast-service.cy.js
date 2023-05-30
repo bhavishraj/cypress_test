@@ -3,6 +3,13 @@ const uiUtils = require('./utils');
 const apiWeatherUrl = `${Cypress.env('apiUrl')}/data/2.5/weather`;
 const testContext = {};
 
+/**
+ * # ui-weather-forecast-service.cy.js
+ * ## load home page
+ * - enable location in Confirm box by enable browserPermissions.geolocations property in cypress.config.js
+ * - load home at url `http://localhost:3000/weather`
+ * - wait for all the requests to load by intercepting the requests
+ */
 describe('load home page', () => {
   it('location should be enabled', () => {
     expect(isPermissionAllowed('notifications')).to.be.true;
@@ -14,6 +21,12 @@ describe('load home page', () => {
   });
 });
 
+/**
+ * ## verify static elements
+ * - verify home page title, settings button and photo author details link in Dashboard page
+ * - navigate to settings page and verify settings page title, units to be set to Metrics and other static elements
+ * - navigate to Dashboard and verify the values are in metric units by default
+ */
 describe('verify static elements', () => {
   it('should verify home page title, settings button and photo author details link', () => {
     cy.get('.title').should('be.visible').and('have.text', `Dashboard`);
@@ -69,12 +82,31 @@ describe('verify static elements', () => {
     });
   });
 });
+
+/**
+ * ## verify application can use the current location
+ * - verify that number of weather cards are 3, which is one more than default locations. The third location is the current location
+ */
 describe('verify application can use the current location', () => {
   it('should verify application can use the current location', () => {
     cy.get('[data-testid="weather-card"]').should('have.length', 3);
   });
 });
 
+/**
+ * ## Verify that the user can add/remove new geographical locations
+ * - navigate to settings page
+ * - Verify that the user can add a new geographical locations
+ *    - add a new location(Oslo)
+ *    - verify that newly added location is present in the list
+ *    - return to Dashboard and assert the addition of new location by asserting the number of weather cards to be 4
+ *    - click on the newly added location's weather card and
+ *        assert the weather forecast details of newly added location
+ * - Verify that the user can remove newly geographical locations
+ *    - navigate to settings page
+ *    - delete the newly added location(Oslo) and assert the count of locations in list
+ *    - return to Dashboard and assert that the deleted location's weather card is not present in the dashboard
+ */
 describe('Verify that the user can add/remove new geographical locations', () => {
   it('should navigate to settings page', () => {
     uiUtils.navigateToSettings();
@@ -141,13 +173,24 @@ describe('Verify that the user can add/remove new geographical locations', () =>
   });
 });
 
+/**
+ * ## Verify that the user can switch the preferred units
+ * - Verify that the user can switch the preferred units from Metric to Imperial
+ *    - navigate to settings page
+ *    - assert that units Metric is selected by default and switch the units to Imperial
+ *    - assert that units Imperial is selected after switching
+ *    - return to Dashboard and assert that the Unit displayed in Dashboard is Imperial
+ * - Revert the preferred units back to Metric
+ *    - switch the units to Metric and assert Imerial is not selected
+ *    - return to Dashboard and assert that the Unit displayed in Dashboard is Metric
+ */
 describe('Verify that the user can switch the preferred units', () => {
   context('Verify that the user can switch the preferred units from Metric to Imperial', () => {
     it('should navigate to settings page', () => {
       uiUtils.navigateToSettings();
     });
 
-    it('should assert that units Metric is selected and switch the units to Imperial', () => {
+    it('should assert that units Metric is selected by default and switch the units to Imperial', () => {
       cy.get('.section >.buttons > .button').first().and('have.text', `Metric ✅`);
       cy.get('.section >.buttons > .button').last().and('have.text', `Imperial ⬜`).click();
     });
@@ -167,12 +210,13 @@ describe('Verify that the user can switch the preferred units', () => {
       });
     });
   });
+
   context('Revert the preferred units back to Metric', () => {
     it('should navigate to settings page', () => {
       uiUtils.navigateToSettings();
     });
 
-    it('should assert that units Metric is selected and switch the units to Imperial', () => {
+    it('should switch the units to Metric and assert Imerial is not selected', () => {
       cy.get('.section >.buttons > .button').first().and('have.text', `Metric ⬜`).click();
       cy.get('.section >.buttons > .button').last().and('have.text', `Imperial ⬜`);
     });
@@ -181,7 +225,7 @@ describe('Verify that the user can switch the preferred units', () => {
       uiUtils.backToDashboard();
     });
 
-    it('should assert that the Unit displayed in Dashboard is Imperial', () => {
+    it('should assert that the Unit displayed in Dashboard is Metric', () => {
       cy.get('[data-testid="weather-card-temperature"]').contains('span', '°C', {
         matchCase: false,
       });
@@ -189,6 +233,24 @@ describe('Verify that the user can switch the preferred units', () => {
   });
 });
 
+/**
+ * ## Mock a location and validate the current weather, temperature, sunrise, and sunset times
+ * - Load fixture data to assert mocked location's statistics
+ * - navigate to settings page
+ * - Verify that the the user can add new geographical locations
+ *    - add a new location - Delhi
+ *    - assert the addition of new location in list
+ * - Verify the new added location details in Dashboard
+ *    - should invoke cy.intercept to mock the location's weather forecast and return to Dashboard
+ *    - assert the addition of new location by asserting the weather card for the location
+ *    - assert the weather forecast details of newly added location like location name, temperature values,
+ *      sunset time, sunrise time, humidity, visiblity
+ *    - return to Dashboard
+ * - Verify that the user can remove newly added geographical locations
+ *    - navigate to settings page
+ *    - delete the newly added location(Delhi) and assert the count of locations in list
+ *    - return to Dashboard and assert that the deleted location's weather card is not present in the dashboard
+ */
 describe('Mock a location and validate the current weather, temperature, sunrise, and sunset times', () => {
   it(`Load fixture data to assert mocked location's statistics`, () => {
     cy.log('Loading fixture data from weather.json');
