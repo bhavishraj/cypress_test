@@ -4,6 +4,7 @@ const {
 } = require("cypress-browser-permissions");
 
 module.exports = defineConfig({
+  projectId: '3yc824',
   e2e: {
     testIsolation: false,
     env: {

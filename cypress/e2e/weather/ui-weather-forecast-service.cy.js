@@ -19,16 +19,25 @@ describe('verify static elements', () => {
     cy.get('.title').should('be.visible').and('have.text', `Dashboard`);
     cy.get('.mt-5 > a').should('have.attr', 'href').and('include', 'weather/settings');
     cy.get('.photo-author > a')
-      .contains('César Couto')
+      .contains('César Couto', {
+        matchCase: false,
+      })
       .should('have.attr', 'href')
       .and('include', 'unsplash.com');
     cy.get('.photo-author > a')
-      .contains('Unsplash')
+      .contains('Unsplash', {
+        matchCase: false,
+      })
       .should('have.attr', 'href')
       .and('include', 'unsplash.com');
   });
+
   it('should verify settings page title, other static elements', () => {
-    cy.get('.mt-5 > a').contains('Settings').click();
+    cy.get('.mt-5 > a')
+      .contains('Settings', {
+        matchCase: false,
+      })
+      .click();
     cy.get('.has-text-centered > .title').should('be.visible').and('have.text', `Settings`);
     cy.get('.container > :nth-child(1) > .title')
       .should('be.visible')
@@ -48,10 +57,12 @@ describe('verify static elements', () => {
     cy.get('.section >.buttons > .button').first().and('have.text', `Metric ✅`);
     cy.get('.section >.buttons > .button').last().and('have.text', `Imperial ⬜`);
   });
+
   it('should return to Dashboard', () => {
     cy.get('.has-text-centered > a').should('have.attr', 'href').and('include', '/weather');
     uiUtils.backToDashboard();
   });
+
   it('should assert that the Unit displayed in Dashboard is Metric', () => {
     cy.get('[data-testid="weather-card-temperature"]').contains('span', '°C', {
       matchCase: false,
@@ -92,10 +103,18 @@ describe('Verify that the user can add/remove new geographical locations', () =>
       cy.get(`[aria-label="Current temperature"]`).should('be.visible');
       cy.get(`[aria-label="Highest expected temperature"]`).should('be.visible');
       cy.get(`[aria-label="Lowest expected temperature"]`).should('be.visible');
-      cy.contains('Sunrise').should('be.visible');
-      cy.contains('Sunset').should('be.visible');
-      cy.contains('Humidity').should('be.visible');
-      cy.contains('Visibility').should('be.visible');
+      cy.contains('Sunrise', {
+        matchCase: false,
+      }).should('be.visible');
+      cy.contains('Sunset', {
+        matchCase: false,
+      }).should('be.visible');
+      cy.contains('Humidity', {
+        matchCase: false,
+      }).should('be.visible');
+      cy.contains('Visibility', {
+        matchCase: false,
+      }).should('be.visible');
     });
     it('should return to Dashboard', () => {
       uiUtils.backToDashboard();
@@ -105,13 +124,16 @@ describe('Verify that the user can add/remove new geographical locations', () =>
     it('should navigate to settings page', () => {
       uiUtils.navigateToSettings();
     });
+
     it('should delete the newly added location and assert the count of locations in list', () => {
       const locationName = 'Oslo';
       uiUtils.deleteLocation(locationName, 2);
     });
+
     it('should return to Dashboard', () => {
       uiUtils.backToDashboard();
     });
+
     it('should assert that the deleted location is not present in the dashboard', () => {
       const locationName = 'Oslo';
       uiUtils.assertDeletedLocation(locationName, 3);
@@ -124,17 +146,21 @@ describe('Verify that the user can switch the preferred units', () => {
     it('should navigate to settings page', () => {
       uiUtils.navigateToSettings();
     });
+
     it('should assert that units Metric is selected and switch the units to Imperial', () => {
       cy.get('.section >.buttons > .button').first().and('have.text', `Metric ✅`);
       cy.get('.section >.buttons > .button').last().and('have.text', `Imperial ⬜`).click();
     });
+
     it('should assert that units Imperial is selected after switching', () => {
       cy.get('.section >.buttons > .button').first().and('contain.text', `Metric ⬜`);
       cy.get('.section >.buttons > .button').last().and('have.text', `Imperial ✅`);
     });
+
     it('should return to Dashboard', () => {
       uiUtils.backToDashboard();
     });
+
     it('should assert that the Unit displayed in Dashboard is Imperial', () => {
       cy.get('[data-testid="weather-card-temperature"]').contains('span', '°F', {
         matchCase: false,
@@ -145,13 +171,16 @@ describe('Verify that the user can switch the preferred units', () => {
     it('should navigate to settings page', () => {
       uiUtils.navigateToSettings();
     });
+
     it('should assert that units Metric is selected and switch the units to Imperial', () => {
       cy.get('.section >.buttons > .button').first().and('have.text', `Metric ⬜`).click();
       cy.get('.section >.buttons > .button').last().and('have.text', `Imperial ⬜`);
     });
+
     it('should return to Dashboard', () => {
       uiUtils.backToDashboard();
     });
+
     it('should assert that the Unit displayed in Dashboard is Imperial', () => {
       cy.get('[data-testid="weather-card-temperature"]').contains('span', '°C', {
         matchCase: false,
@@ -181,6 +210,7 @@ describe('Mock a location and validate the current weather, temperature, sunrise
       uiUtils.addLocation(locationName, 3);
     });
   });
+
   context('Verify the new added location details in Dashboard', () => {
     it(`should invoke cy.intercept to mock a location's weather forecast and return to Dashboard`, () => {
       uiUtils.interceptMockedEndpoints();
@@ -191,9 +221,9 @@ describe('Mock a location and validate the current weather, temperature, sunrise
       cy.get('[data-testid="weather-card"]').should('have.length', 4);
       cy.get('[data-testid="weather-card"]').last().should('contain.text', `Delhi`);
       uiUtils.interceptMockedEndpoints();
-
       cy.get(`[aria-label="See weather for Delhi"]`).should('be.visible').click();
     });
+
     it('should assert the weather forecast details of newly added location', () => {
       const sunriseTime = uiUtils.getTime(testContext.sys.sunrise);
       const sunsetTime = uiUtils.getTime(testContext.sys.sunset);
@@ -209,37 +239,49 @@ describe('Mock a location and validate the current weather, temperature, sunrise
       cy.get(`[aria-label="Lowest expected temperature"]`)
         .should('be.visible')
         .should('have.text', `L: ${testContext.main.temp_min} °C`);
-      cy.contains('Sunrise')
+      cy.contains('Sunrise', {
+        matchCase: false,
+      })
         .should('be.visible')
         .siblings('.is-size-5')
         .should('have.text', sunriseTime);
-      cy.contains('Sunset')
+      cy.contains('Sunset', {
+        matchCase: false,
+      })
         .should('be.visible')
         .siblings('.is-size-5')
         .should('have.text', sunsetTime);
-      cy.contains('Humidity')
+      cy.contains('Humidity', {
+        matchCase: false,
+      })
         .should('be.visible')
         .siblings('.is-size-5')
         .should('have.text', `${testContext.main.humidity}%`);
-      cy.contains('Visibility').should('be.visible');
+      cy.contains('Visibility', {
+        matchCase: false,
+      }).should('be.visible');
     });
+
     it('should return to Dashboard', () => {
       uiUtils.interceptMockedEndpoints();
-
       uiUtils.backToDashboard();
     });
   });
+
   context('Verify that the user can remove newly added geographical locations', () => {
     it('should navigate to settings page', () => {
       uiUtils.navigateToSettings();
     });
+
     it('should delete the newly added location and assert the count of locations in list', () => {
       const locationName = 'Delhi';
       uiUtils.deleteLocation(locationName, 2);
     });
+
     it('should return to Dashboard', () => {
       uiUtils.backToDashboard();
     });
+
     it('should assert that the deleted location is not present in the dashboard', () => {
       const locationName = 'Delhi';
       uiUtils.assertDeletedLocation(locationName, 3);
