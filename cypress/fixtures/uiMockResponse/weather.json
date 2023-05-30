@@ -1,0 +1,43 @@
+{
+  "coord": {
+    "lon": 77.2219,
+    "lat": 28.6517
+  },
+  "weather": [
+    {
+      "id": 701,
+      "main": "Mist",
+      "description": "mist",
+      "icon": "50n"
+    }
+  ],
+  "base": "stations",
+  "main": {
+    "temp": 23,
+    "feels_like": 23,
+    "temp_min": 23,
+    "temp_max": 23,
+    "pressure": 1009,
+    "humidity": 83
+  },
+  "visibility": 2800,
+  "wind": {
+    "speed": 0,
+    "deg": 0
+  },
+  "clouds": {
+    "all": 40
+  },
+  "dt": 1685403985,
+  "sys": {
+    "type": 1,
+    "id": 9165,
+    "country": "IN",
+    "sunrise": 1685404461,
+    "sunset": 1685454188
+  },
+  "timezone": 19800,
+  "id": 1273840,
+  "name": "Connaught Place",
+  "cod": 200
+}
