@@ -1,0 +1,17 @@
+version: '3.2'
+services:
+  cypress:
+    network_mode: host
+    container_name: cypress_test
+    # https://hub.docker.com/r/cypress/included/tags
+    image: 'cypress/included:10.3.1'
+    environment:
+      - CYPRESS_baseUrl=${CYPRESS_baseUrl:?}
+      - CYPRESS_browser_permissions_notifications=allow
+      - CYPRESS_browser_permissions_geolocation=allow
+      - NO_COLOR=1
+    command: npx cypress run --spec "${CYPRESS_specPattern:?}" --browser chrome
+    working_dir: /e2e
+    volumes:
+      - ./..:/e2e
+# See the file cypress/readme.md for documentation
