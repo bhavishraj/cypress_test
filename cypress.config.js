@@ -5,15 +5,15 @@ const {
 
 module.exports = defineConfig({
   projectId: "3yc824",
-  env: {
-    baseUrl: "http://localhost:3000/weather",
-    apiUrl: "https://api.openweathermap.org",
-    browserPermissions: {
-      notifications: "allow",
-      geolocation: "allow",
-    },
-  },
   e2e: {
+    baseUrl: "http://localhost:3000/weather",
+    env: {
+      apiUrl: "https://api.openweathermap.org",
+      browserPermissions: {
+        notifications: "allow",
+        geolocation: "allow",
+      },
+    },
     testIsolation: false,
     chromeWebSecurity: false,
     setupNodeEvents(on, config) {
