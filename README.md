@@ -2,7 +2,7 @@
 
 ## Requirement:
 
-1. Node 20
+1. Node 20.1
 
 ## Steps to run the test:
 
